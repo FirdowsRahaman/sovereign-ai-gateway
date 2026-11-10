@@ -1,0 +1,32 @@
+name: Gateway Security & Architecture CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Linting & Security Tools
+        run: |
+          pip install ruff bandit fastapi pydantic
+
+      - name: Run Ruff
+        run: ruff check src
+
+      - name: Run Bandit (Security Vulnerabilities)
+        run: bandit -r src -ll -ii
+
+      - name: Verify EU AI Act Technical Documentation
+        run: test -f EU_AI_ACT_TECHNICAL_DOCUMENTATION.md && echo "✅ EU AI Act Documentation Verified"
