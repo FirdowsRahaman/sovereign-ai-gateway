@@ -1,5 +1,4 @@
-"""
-GDPR PII Scrubbing Middleware
+"""GDPR PII Scrubbing Middleware
 Detects European and global personal identifiers (IBANs, emails, phone numbers, tax IDs)
 and replaces them with deterministic pseudonymization tokens.
 """
@@ -8,11 +7,9 @@ import re
 from typing import Dict, Tuple, List
 
 class GDPRPIIScrubber:
-    """
-    Scans prompts and tool arguments to redact personal data under GDPR Article 25 (Data Protection by Design).
+    """Scans prompts and tool arguments to redact personal data under GDPR Article 25 (Data Protection by Design).
     Preserves an isolated cryptographic mapping session to restore identifiers upon response delivery.
-    """
-    PATTERNS = {
+    """PATTERNS = {
         "EMAIL": r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+",
         "EU_IBAN": r"[A-Z]{2}\d{2}[A-Z0-9]{4}\d{7}([A-Z0-9]?){0,16}",
         "PHONE": r"(\+?[0-9]{1,4}[\s-]?)?(\(?[0-9]{2,4}\)?[\s-]?)?[0-9]{3,4}[\s-]?[0-9]{3,4}",

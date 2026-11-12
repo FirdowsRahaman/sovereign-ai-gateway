@@ -1,5 +1,4 @@
-"""
-EU AI Act Article 12 Event & Audit Telemetry Logger
+"""EU AI Act Article 12 Event & Audit Telemetry Logger
 Emits immutable, cryptographically verifiable structured JSON-L logs for every LLM interaction.
 """
 
@@ -10,8 +9,7 @@ from datetime import datetime, timezone
 from typing import Dict, Any, Optional
 
 class EUAIActAuditLogger:
-    """
-    Implements Article 12 (Record-Keeping) of Regulation (EU) 2024/1689.
+    """Implements Article 12 (Record-Keeping) of Regulation (EU) 2024/1689.
     Tracks model name, prompt tokens, completion tokens, PII scrubbing stats,
     latency, and generates a SHA-256 tamper-evident verification hash.
     """

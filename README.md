@@ -1,4 +1,4 @@
-# Sovereign AI Gateway (EU AI Act & GDPR Compliance Proxy) 🇪🇺
+# Sovereign AI Gateway (EU AI Act & GDPR Compliance Proxy) 
 
 <p align="left">
   <img src="https://img.shields.io/badge/Compliance-EU%20AI%20Act%20Article%2012%20%26%2015-10B981?style=flat-square" alt="EU AI Act">
@@ -12,18 +12,18 @@ An enterprise-grade reverse proxy and guardrails gateway that sits between clien
 
 ---
 
-## 📑 Table of Contents
-- [Why an EU Sovereign AI Gateway?](#-why-an-eu-sovereign-ai-gateway)
-- [Architecture](#-architecture)
-- [Key Features](#-key-features)
-- [Quick Start](#-quick-start)
-- [API Usage](#-api-usage)
-- [Architecture Decision Records (ADRs)](#-architecture-decision-records)
-- [License](#-license)
+## Table of Contents
+- [Why an EU Sovereign AI Gateway?](#why-an-eu-sovereign-ai-gateway)
+- [Architecture](#architecture)
+- [Key Features](#key-features)
+- [Quick Start](#quick-start)
+- [API Usage](#api-usage)
+- [Architecture Decision Records (ADRs)](#architecture-decision-records)
+- [License](#license)
 
 ---
 
-## 🇪🇺 Why an EU Sovereign AI Gateway?
+## Why an EU Sovereign AI Gateway?
 
 Under **Regulation (EU) 2024/1689 (EU AI Act)** and the **GDPR**, European companies cannot send raw customer personal data (IBANs, emails, passports) to unvetted cloud models without risk of massive non-compliance fines (up to €35M or 7% of global annual turnover).
 
@@ -34,7 +34,7 @@ The Sovereign AI Gateway solves this by acting as an in-region privacy buffer:
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 Client Application (Web / Backend / Agent)
@@ -66,7 +66,7 @@ Client Application (Web / Backend / Agent)
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 1. **Clone & Run with Docker**:
    ```bash
@@ -84,7 +84,7 @@ Client Application (Web / Backend / Agent)
 
 ---
 
-## 💻 API Usage
+## API Usage
 
 Because the gateway exposes the standard `/v1/chat/completions` route, point any OpenAI SDK client directly to it:
 
@@ -108,5 +108,5 @@ print(response.choices[0].message.content)
 
 ---
 
-## 📄 License
+## License
 This project is licensed under the MIT License.
