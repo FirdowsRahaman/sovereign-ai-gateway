@@ -2,17 +2,16 @@
 OpenAI/vLLM compatible reverse proxy enforcing EU AI Act & GDPR compliance.
 """
 
+import hashlib
 import os
 import time
 import uuid
-import hashlib
-from typing import List, Dict, Any, Optional
-from fastapi import FastAPI, HTTPException, Request, Depends
-from fastapi.responses import JSONResponse
+
+from fastapi import FastAPI, Request
 from pydantic import BaseModel, Field
 
-from src.guardrails.pii_scrubber import GDPRPIIScrubber
 from src.governance.audit_logger import EUAIActAuditLogger
+from src.guardrails.pii_scrubber import GDPRPIIScrubber
 
 app = FastAPI(
     title="Sovereign AI Gateway (EU AI Act & GDPR)",
@@ -28,10 +27,10 @@ class ChatMessage(BaseModel):
 
 class ChatCompletionRequest(BaseModel):
     model: str = Field(default="mistralai/Mistral-Large-2407")
-    messages: List[ChatMessage]
-    temperature: Optional[float] = 0.7
-    max_tokens: Optional[int] = 1024
-    stream: Optional[bool] = False
+    messages: list[ChatMessage]
+    temperature: float | None = 0.7
+    max_tokens: int | None = 1024
+    stream: bool | None = False
 
 @app.get("/health")
 async def health_check():
@@ -84,7 +83,7 @@ async def chat_completions(req: ChatCompletionRequest, request: Request):
     )
     
     # In production, stream to OpenTelemetry collector or S3 Glacier WORM
-    print(f"\n [Audit Telemetry] {audit_record['tamper_evident_sha256'][:16]} | {audit_record['status'] if 'status' in audit_record else 'COMPLIANT'}")
+    print(f"\n [Audit Telemetry] {audit_record['tamper_evident_sha256'][:16]} | {audit_record.get('status', 'COMPLIANT')}")
 
     return {
         "id": request_id,

@@ -2,11 +2,10 @@
 Emits immutable, cryptographically verifiable structured JSON-L logs for every LLM interaction.
 """
 
-import time
-import json
 import hashlib
-from datetime import datetime, timezone
-from typing import Dict, Any, Optional
+from datetime import UTC, datetime
+from typing import Any
+
 
 class EUAIActAuditLogger:
     """Implements Article 12 (Record-Keeping) of Regulation (EU) 2024/1689.
@@ -23,9 +22,9 @@ class EUAIActAuditLogger:
         pii_tokens_redacted: int,
         latency_ms: float,
         sovereign_region: str = "eu-central-1"
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         
-        timestamp = datetime.now(timezone.utc).isoformat()
+        timestamp = datetime.now(UTC).isoformat()
         
         # Cryptographic verification digest
         hash_input = f"{request_id}:{caller_identity_hash}:{target_model}:{timestamp}:{latency_ms}"

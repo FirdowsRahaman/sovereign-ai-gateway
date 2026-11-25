@@ -4,12 +4,14 @@ and replaces them with deterministic pseudonymization tokens.
 """
 
 import re
-from typing import Dict, Tuple, List
+from typing import ClassVar
+
 
 class GDPRPIIScrubber:
     """Scans prompts and tool arguments to redact personal data under GDPR Article 25 (Data Protection by Design).
     Preserves an isolated cryptographic mapping session to restore identifiers upon response delivery.
-    """PATTERNS = {
+    """
+    PATTERNS: ClassVar[dict[str, str]] = {
         "EMAIL": r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+",
         "EU_IBAN": r"[A-Z]{2}\d{2}[A-Z0-9]{4}\d{7}([A-Z0-9]?){0,16}",
         "PHONE": r"(\+?[0-9]{1,4}[\s-]?)?(\(?[0-9]{2,4}\)?[\s-]?)?[0-9]{3,4}[\s-]?[0-9]{3,4}",
@@ -20,7 +22,7 @@ class GDPRPIIScrubber:
     def __init__(self):
         self.compiled_patterns = {k: re.compile(v) for k, v in self.PATTERNS.items()}
 
-    def anonymize(self, text: str) -> Tuple[str, Dict[str, str]]:
+    def anonymize(self, text: str) -> tuple[str, dict[str, str]]:
         mapping = {}
         sanitized = text
         token_counter = 1
@@ -37,7 +39,7 @@ class GDPRPIIScrubber:
 
         return sanitized, mapping
 
-    def deanonymize(self, text: str, mapping: Dict[str, str]) -> str:
+    def deanonymize(self, text: str, mapping: dict[str, str]) -> str:
         """Restores original PII safely within sovereign client perimeter."""
         result = text
         for token, original in mapping.items():
