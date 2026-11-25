@@ -114,4 +114,4 @@ async def chat_completions(req: ChatCompletionRequest, request: Request):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("src.gateway.server:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("src.gateway.server:app", host=os.getenv("GATEWAY_HOST", "127.0.0.1"), port=8000, reload=True)
