@@ -7,10 +7,11 @@ import os
 import time
 import uuid
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel, Field
 
 from src.governance.audit_logger import EUAIActAuditLogger
+from src.governance.policy_engine import SlidingWindowRateLimiter, SovereignPolicyEngine
 from src.guardrails.pii_scrubber import GDPRPIIScrubber
 
 app = FastAPI(
@@ -20,6 +21,7 @@ app = FastAPI(
 )
 
 scrubber = GDPRPIIScrubber()
+rate_limiter = SlidingWindowRateLimiter(max_requests=60, window_seconds=60.0)
 
 class ChatMessage(BaseModel):
     role: str
@@ -46,6 +48,15 @@ async def chat_completions(req: ChatCompletionRequest, request: Request):
     request_id = f"eu-req-{uuid.uuid4().hex[:12]}"
     caller_ip = request.client.host if request.client else "127.0.0.1"
     caller_hash = hashlib.sha256(caller_ip.encode()).hexdigest()[:16]
+    sovereign_region = os.getenv("SOVEREIGN_REGION", "eu-central-1")
+
+    if not rate_limiter.allow(caller_hash):
+        raise HTTPException(status_code=429, detail="Rate limit exceeded for sovereign gateway.")
+
+    combined_prompt = "\n".join(msg.content for msg in req.messages)
+    policy_decision = SovereignPolicyEngine.evaluate(req.model, combined_prompt, sovereign_region)
+    if not policy_decision.allowed:
+        raise HTTPException(status_code=403, detail=f"[{policy_decision.policy_code}] {policy_decision.reason}")
 
     # 1. PII Scrubbing on incoming prompt (GDPR Art. 25 Privacy by Design)
     all_pii_mappings = {}

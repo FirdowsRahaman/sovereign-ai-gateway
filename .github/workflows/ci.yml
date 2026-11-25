@@ -20,13 +20,16 @@ jobs:
 
       - name: Install Linting & Security Tools
         run: |
-          pip install ruff bandit fastapi pydantic
+          pip install ruff bandit fastapi pydantic pytest httpx
 
       - name: Run Ruff
-        run: ruff check src
+        run: ruff check src tests
 
       - name: Run Bandit (Security Vulnerabilities)
         run: bandit -r src -ll -ii
+
+      - name: Run Gateway Tests
+        run: PYTHONPATH=. pytest tests -v
 
       - name: Verify EU AI Act Technical Documentation
         run: test -f EU_AI_ACT_TECHNICAL_DOCUMENTATION.md && echo "✅ EU AI Act Documentation Verified"
